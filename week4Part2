@@ -1,0 +1,56 @@
+#!/bin/bash
+# WEEK 4 PART 2:
+# Redo the last code to actually process the arguments given. 
+# For each, set a flag to indicate whether the option was seen. 
+# Also, add one argument: -o outfile. 
+# Leave $1 positioned at the first nonoption argument 
+# and a variable ofile set to the path given as outfile (if any). 
+#  (Hint: you cannot use a for loop. Use a while loop)
+
+fFlag=false
+pFlag=false
+tFlag=false
+vFlag=false
+zFlag=false
+ofile=
+error=false
+error(){
+    echo "$(basename "$0"): ERROR - $*" >&2
+    echo "syntax: $(basename "$0") [-f] [-p] [-t] [-v] [-z] [file argument]" >&2
+	error=true
+}
+
+displayResults(){
+	if [ $error = "false" ]; then
+		echo "fFlag: $fFlag"
+		echo "pFlag: $pFlag"
+		echo "tFlag: $tFlag"
+		echo "vFlag: $vFlag"
+		echo "zFlag: $zFlag"
+		echo "ofile: $ofile"
+    fi
+}
+
+while [  $# -gt 0 ]; do
+    case "$1" in
+        -f) fFlag=true;;
+        -p) pFlag=true;;
+        -t) tFlag=true;;
+        -v) vFlag=true;;
+        -z) zFlag=true;;
+        -*) error "Illegal option '$1'";;
+        *) break;;
+    esac
+    shift
+done
+if [ -f $1 ]; then
+	ofile="$(dirname "$1")"
+	#Added the absolute path 
+	if [ $ofile = "." ]; then 
+		ofile="$(pwd)/$( basename $1)"
+	fi
+else
+	error "$1 is not a file"
+fi
+
+displayResults
